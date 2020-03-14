@@ -8,7 +8,7 @@ let
 let msj=[{_id:1, data:1}];
 // event fired every time a new client connects:
 
-// console.log(`Esperando a algun cliente...`);
+console.log(`Esperando a algun cliente...`);
 
 let tagLost = [{
     "taglost": "cc:50:e3:a9:8e:d6",
@@ -41,7 +41,7 @@ let tagLost = [{
   let validator = false
   setInterval(() => {
     if(validator){
-        io.emit('missing-Tag-Aalarm',{msg:'Danger no target is detected in the system', Tags:[]})
+        server.emit('missing-Tag-Aalarm',{msg:'Danger no target is detected in the system', Tags:[]})
         validator= false
     }else{
         validator = true
@@ -55,7 +55,7 @@ let tagLost = [{
 setInterval(() => {
     
 
-        io.emit('alarm-low-batery', {
+    server.emit('alarm-low-batery', {
             ok:true,
             msg:'The following targets have batteries below 30%',
             tagLowBattery})
