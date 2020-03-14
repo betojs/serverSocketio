@@ -28,7 +28,16 @@ let tagLost = [{
     "piso": "Planta Baja"
   }]
   
-  
+  let tagLowBattery=[
+      {
+          macTag:"c8:64:46:ac:3a:18",
+          batteryLevel:  23
+        },
+      {
+          macTag:"c4:04:ca:41:50:ad",
+          batteryLevel:  30
+        }
+]
   let validator = false
   setInterval(() => {
     if(validator){
@@ -41,7 +50,17 @@ let tagLost = [{
         Tags:tagLost})
     }
     
-}, 40000);
+}, 35000);
+
+setInterval(() => {
+    
+
+        io.emit('alarm-low-batery', {
+            ok:true,
+            msg:'The following targets have batteries below 30%',
+            tagLowBattery})
+
+}, 60000);
 
 server.on("connection", (socket) => {
     console.info(`Client connected [id=${socket.id}]`);
