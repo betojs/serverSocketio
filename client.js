@@ -1,6 +1,6 @@
 const
     io = require("socket.io-client"),
-    ioClient = io.connect("http://200.93.82.139:3000");
+    ioClient = io.connect("http://192.168.0.101:3000");
 
 // ioClient.on("seq-num", (msg) => console.info(msg));
 // ioClient.on('hey', (data)=>console.log(data))
