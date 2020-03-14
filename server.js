@@ -7,6 +7,42 @@ let
     
 let msj=[{_id:1, data:1}];
 // event fired every time a new client connects:
+
+// console.log(`Esperando a algun cliente...`);
+
+let tagLost = [{
+    "taglost": "cc:50:e3:a9:8e:d6",
+    "region": "angar centro",
+    "piso": "sala"
+  },{
+    "taglost": "c4:2f:eb:44:2c:ea",
+    "region": "",
+    "piso": ""
+  },{
+    "taglost": "c8:64:46:ac:3a:18",
+    "region": "angar centro",
+    "piso": "sala"
+  },{
+    "taglost": "c4:04:ca:41:50:ad",
+    "region": "Garaje",
+    "piso": "Planta Baja"
+  }]
+  
+  
+  let validator = false
+  setInterval(() => {
+    if(validator){
+        io.emit('missing-Tag-Aalarm',{msg:'Danger no target is detected in the system', Tags:[]})
+        validator= false
+    }else{
+        validator = true
+
+        server.emit('missing-Tag-Aalarm',{msg:'the following tags are missing from the system',
+        Tags:tagLost})
+    }
+    
+}, 40000);
+
 server.on("connection", (socket) => {
     console.info(`Client connected [id=${socket.id}]`);
     // initialize this client's sequence number
