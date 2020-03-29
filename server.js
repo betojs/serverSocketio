@@ -58,7 +58,19 @@ setInterval(() => {
     server.emit('alarm-low-batery', {
             ok:true,
             msg:'The following targets have batteries below 30%',
-            tagLowBattery})
+            tagLowBattery:tagLowBattery})
+
+}, 60000);
+
+setInterval(() => {
+let RpisDisconnected =[ { macRpi: 'b8:27:eb:d4:04:c9',
+region: 'angar derecho',
+floor: 'Aadministrativos' } ]
+
+    server.emit('gateway-Aalarm', {
+            ok:true,
+            msg:'Caution Gateways disconnected',
+            gateways:RpisDisconnected})
 
 }, 60000);
 
