@@ -74,6 +74,37 @@ floor: 'Aadministrativos' } ]
 
 }, 60000);
 
+
+
+
+
+let sendAccion = (js)=>{
+    console.log(js);
+    
+    
+}
+
+let stoped_caracter = ()=>{
+
+
+    setTimeout(() => {
+
+        let data = {aviso:'Finished'}
+        server.emit('progressInfo',data)
+        
+    }, 10000);
+}
+
+
+
+let refresh =() =>{
+
+    let actualiza=`Actualizar libreta del server`
+    let etiqueta= {name:'c4:2f:eb:44:2c:ea'}
+    console.log(actualiza);
+    server.emit('refresh', actualiza)
+    server.emit('Option-to-Validator', etiqueta)
+}
 server.on("connection", (socket) => {
     console.info(`Client connected [id=${socket.id}]`);
     // initialize this client's sequence number
@@ -93,6 +124,29 @@ server.on("connection", (socket) => {
         sequenceNumberByClient.delete(socket);
         console.info(`Client gone [id=${socket.id}]`);
     });
+
+
+    socket.on('refresh-client', data=>{
+        console.log(data);
+        refresh();
+    })
+
+    socket.on('accions', data =>{
+        console.log(`---`);
+        console.log(data);
+        console.log(`---`);
+        for (let i = 0; i <( data.length - 1); i++) {
+            
+            let js={
+                id:'socketId',//resul.socketID,
+                distancia:data[i].distancia
+            }
+            sendAccion(js)
+            
+        }
+        stoped_caracter()
+    })
+
 });
 // sends each client its current sequence number
 setInterval(() => {
@@ -101,3 +155,28 @@ setInterval(() => {
         sequenceNumberByClient.set(client, sequenceNumber + 1);
     }
 }, 1000);
+
+
+
+/* *****************************************
+*	CARACTERIZACION!
+*	
+/* *****************************************/
+
+
+// (Send) Enviar datos par iniciar la recoleccion de muestras
+
+// var distance = 1//document.getElementById('Distancia').value
+// var array = [{ 
+//     distancia: distance,//document.getElementById('Distancia').value, 
+//     mac: 'c4:2f:eb:44:2c:ea', //document.getElementById('maclist1').value      
+//   },{ 
+//     distancia:distance,// document.getElementById('Distancia').value, 
+//     mac: 'c4:2f:eb:44:2c:ea', //document.getElementById('maclist2').value
+//   },{ 
+//     distancia: distance, //document.getElementById('Distancia').value, 
+//     mac: 'c4:2f:eb:44:2c:ea',//document.getElementById('maclist3').value
+//   }, 
+//   {sessionId:'asfasdasgfwqe31`2'}]; 
+
+// socket.emit('accions', array)
