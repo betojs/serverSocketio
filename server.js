@@ -102,7 +102,7 @@ let startTracking = (aviso) => {
 
     console.log(aviso);
 
-    io.emit('asset-tracking', aviso);
+    server.emit('asset-tracking', aviso);
 }
 
 let startValidation = async (aviso) => {
@@ -128,7 +128,7 @@ let startValidation = async (aviso) => {
 
         for (let i = 0; i < arr.length; i++) {
             console.log(`HAY 3 MACS ${arr[i].id}|| ${arr[i].mac}`);
-            io.to(arr[i].id).emit('asset-tracking', aviso);
+            server.to(arr[i].id).emit('asset-tracking', aviso);
         }
     }
 
@@ -140,7 +140,7 @@ let stopped = () => {
     let aviso = 'detener el despliegue';
     console.log(aviso);
 
-    io.emit('stopped-all', aviso);
+    server.emit('stopped-all', aviso);
 }
 
 server.on("connection", (socket) => {
