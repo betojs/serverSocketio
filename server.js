@@ -1,9 +1,7 @@
-const
-    io = require("socket.io"),
+const io = require("socket.io"),
     server = io.listen(3000);
 
-let
-    sequenceNumberByClient = new Map();
+let sequenceNumberByClient = new Map();
     
 let msj=[{_id:1, data:1}];
 // event fired every time a new client connects:
@@ -28,7 +26,7 @@ let tagLost = [{
     "piso": "Planta Baja"
   }]
   
-  let tagLowBattery=[
+let tagLowBattery=[
       {
           macTag:"c8:64:46:ac:3a:18",
           batteryLevel:  23
@@ -74,17 +72,13 @@ floor: 'Aadministrativos' } ]
 
 }, 60000);
 
-
-
-
-
 let sendAccion = (js)=>{
     console.log(js);
     
     
 }
 
-let stoped_caracter = ()=>{
+let stopped_caracter = ()=>{
 
 
     setTimeout(() => {
@@ -95,8 +89,6 @@ let stoped_caracter = ()=>{
     }, 10000);
 }
 
-
-
 let refresh =() =>{
 
     let actualiza=`Actualizar libreta del server`
@@ -105,10 +97,58 @@ let refresh =() =>{
     server.emit('refresh', actualiza)
     server.emit('Option-to-Validator', etiqueta)
 }
+
+let startTracking = (aviso) => {
+
+    console.log(aviso);
+
+    io.emit('asset-tracking', aviso);
+}
+
+let startValidation = async (aviso) => {
+
+    let arr = []
+    console.log(aviso);
+
+    arr = [{
+        id: 's5noiTvEkEggkXPOAAAA',
+        tipo: 'validacion',
+        mac: 'c4:2f:eb:44:2c:ea'
+    },{
+        id: 's5noiTvEkEggkXPOAAAB',
+        tipo: 'validacion',
+        mac: 'c4:2f:eb:44:2c:eb'
+    },{
+        id: 's5noiTvEkEggkXPOAAAC',
+        tipo: 'validacion',
+        mac: 'c4:2f:eb:44:2c:ec'
+    }];
+
+    if (arr.length === 3) {
+
+        for (let i = 0; i < arr.length; i++) {
+            console.log(`HAY 3 MACS ${arr[i].id}|| ${arr[i].mac}`);
+            io.to(arr[i].id).emit('asset-tracking', aviso);
+        }
+    }
+
+
+}
+
+
+let stopped = () => {
+    let aviso = 'detener el despliegue';
+    console.log(aviso);
+
+    io.emit('stopped-all', aviso);
+}
+
 server.on("connection", (socket) => {
+
     console.info(`Client connected [id=${socket.id}]`);
     // initialize this client's sequence number
     sequenceNumberByClient.set(socket, 1);
+
     socket.on('prueba', (data) =>{
         let json={_id:socket.id, data}
         msj.push(json)
@@ -119,13 +159,13 @@ server.on("connection", (socket) => {
             server.to(msj[2]._id).emit('hey', 'EPALE SEBAS!')
         }
     })
+
     // when socket disconnects, remove it from the list:
     socket.on("disconnect", () => {
         sequenceNumberByClient.delete(socket);
         console.info(`Client gone [id=${socket.id}]`);
     });
-
-
+    //Actualiza la libreta que enlista los rpi conectados, y nos permite saber quien se conectó.
     socket.on('refresh-client', data=>{
         console.log(data);
         refresh();
@@ -138,13 +178,30 @@ server.on("connection", (socket) => {
         for (let i = 0; i <( data.length - 1); i++) {
             
             let js={
-                id:'socketId',//resul.socketID,
+                id:'socketId', //resul.socketID,
                 distancia:data[i].distancia
             }
             sendAccion(js)
             
         }
-        stoped_caracter()
+        stopped_caracter()
+    })
+
+    socket.on('stop-all', data => {
+        console.log(data);
+        stopped();
+    })
+
+    socket.on('despliegue', async data => {
+
+        console.log(data);
+        if (data.tipo === 'validar') {
+            startValidation(data)
+        } else if (data.tipo === 'tracking') {
+            startTracking(data)
+
+        }
+
     })
 
 });
@@ -155,7 +212,6 @@ setInterval(() => {
         sequenceNumberByClient.set(client, sequenceNumber + 1);
     }
 }, 1000);
-
 
 
 /* *****************************************
