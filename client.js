@@ -1,5 +1,5 @@
 const io = require("socket.io-client"),
-    ioClient = io.connect("http://192.168.8.101:3000");
+    ioClient = io.connect("http://192.168.0.101:3001");
 
 // ioClient.on("seq-num", (msg) => console.info(msg));
 // ioClient.on('hey', (data)=>console.log(data))
@@ -27,7 +27,7 @@ var array = [{
     sessionId: '32qRzDrOV12C0dxqMETlBuaa6XTuW6o9'
   };
 
-  var tipo = "tracking";
+  var tipo = "validation";
 
   var startTrackingObject = {
     sessionId: '32qRzDrOV12C0dxqMETlBuaa6XTuW6o9',
@@ -57,7 +57,7 @@ var array = [{
 
   ioClient.on('asset-tracking',tracking=> console.log(tracking))
 
-  ioClient.on('stopped-all',stopped=> console.log(stopped))
+  ioClient.on('stopped-all',stopped=> console.log(stopped+12))
 
   ioClient.on('refresh', actualiza=> console.log(actualiza))
 
