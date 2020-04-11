@@ -1,5 +1,5 @@
 const io = require("socket.io-client"),
-    ioClient = io.connect("http://192.168.0.101:3001");
+    ioClient = io.connect("http://192.168.0.101:3000");
 
 // ioClient.on("seq-num", (msg) => console.info(msg));
 // ioClient.on('hey', (data)=>console.log(data))
@@ -45,21 +45,22 @@ var array = [{
     objToSend = startTrackingObject;
   }else if( tipo === "validation"){
     objToSend = startValidationObject;
+    console.log(`validando`);
   }
 
-  ioClient.emit('accions', array);
+  // ioClient.emit('accions', array);
 
   ioClient.emit('despliegue', objToSend);
 
-  ioClient.emit('stop-all', stopObject);
+  // ioClient.emit('stop-all', stopObject);
 
-  ioClient.on('progressInfo',data=>console.log(data))
+  // ioClient.on('progressInfo',data=>console.log(data))
 
-  ioClient.on('asset-tracking',tracking=> console.log(tracking))
+  // ioClient.on('asset-tracking',tracking=> console.log(tracking))
 
-  ioClient.on('stopped-all',stopped=> console.log(stopped+12))
+  // ioClient.on('stopped-all',stopped=> console.log(stopped+12))
 
-  ioClient.on('refresh', actualiza=> console.log(actualiza))
+  // ioClient.on('refresh', actualiza=> console.log(actualiza))
 
 
   setTimeout(() => {

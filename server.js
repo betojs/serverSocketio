@@ -1,5 +1,5 @@
 const io = require("socket.io"),
-    server = io.listen(3001);
+    server = io.listen(3000);
 
 let sequenceNumberByClient = new Map();
     
@@ -7,6 +7,34 @@ let msj=[{_id:1, data:1}];
 // event fired every time a new client connects:
 
 console.log(`Esperando a algun cliente...`);
+
+var globalDataGraph = [
+    {
+    name: 'rssi',
+    data:[{x:1, y:1}
+    ]
+    }
+
+];
+// Math.floor(Math.random() * 10) + 1;
+var contando = 0
+
+
+var generarDatos= ()=>{
+    globalDataGraph[0].name = 'b8:27:eb:d4:04:c9-df:a9:ce:b7:4c:f1',
+
+setInterval(() => {
+contando++
+    var point = {};
+    point.x = contando ;
+    point.y = Math.floor(Math.random() * 10) + 1;
+    globalDataGraph[0].data.push(point)
+    
+
+}, 1000);
+
+}
+
 
 let tagLost = [{
     "taglost": "cc:50:e3:a9:8e:d6",
@@ -159,6 +187,29 @@ server.on("connection", (socket) => {
             server.to(msj[2]._id).emit('hey', 'EPALE SEBAS!')
         }
     })
+    
+    // graficar
+    socket.on('datosGraficass', (res) =>{
+        console.log(res);
+        socket.emit('datosGrafica', globalDataGraph);
+    })
+    socket.emit('completeData', globalDataGraph);
+
+
+
+
+
+
+
+    setInterval(() => {
+        socket.emit('completeData', globalDataGraph);
+    },5000);
+
+
+
+
+
+
 
     // when socket disconnects, remove it from the list:
     socket.on("disconnect", () => {
@@ -196,6 +247,7 @@ server.on("connection", (socket) => {
 
         console.log(data);
         if (data.tipo === 'validar') {
+            generarDatos()
             startValidation(data)
         } else if (data.tipo === 'tracking') {
             startTracking(data)
